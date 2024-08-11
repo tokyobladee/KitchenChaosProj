@@ -5,8 +5,10 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Player : MonoBehaviour
-{
-    public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelctedCounterChanged;
+{ 
+    public static Player Instance { get; private set; }
+
+    public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
 
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
@@ -25,6 +27,14 @@ public class Player : MonoBehaviour
     private bool isWalking;
     private Vector3 lastInteractDir;
 
+    public void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("More than one player");
+        }
+        Instance = this;
+    }
     public void Start()
     {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
@@ -52,6 +62,7 @@ public class Player : MonoBehaviour
     private void HandleInteractions()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        
         Vector3 moveDir = new Vector3(inputVector.x,0f,inputVector.y);
         
         if (moveDir != Vector3.zero)
@@ -60,18 +71,19 @@ public class Player : MonoBehaviour
         }
         
         float interactDistance = 2f;
-        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, counterLayerMask))
+        if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance,
+                counterLayerMask))
         {
             if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
                 if (clearCounter != selectedCounter)
                 {
-                    SetSelectedCounter(selectedCounter);
+                    SetSelectedCounter(clearCounter);
                 }
             }
-            else { SetSelectedCounter(null);}
+            else { SetSelectedCounter(null); }
         }
-        else {SetSelectedCounter(null);}
+        else { SetSelectedCounter(null); }
         
         Debug.Log(selectedCounter);
     }
@@ -123,7 +135,7 @@ public class Player : MonoBehaviour
     private void SetSelectedCounter(ClearCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
-        OnSelctedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
         {
             selectedCounter = selectedCounter
         });
