@@ -34,12 +34,13 @@ public class CuttingCounter : BaseCounter
                         progressNormalized = (float)cuttingProgress / cuttingRecipeSO.cuttingProgressMax
                     });
                 }
-            } 
-        } 
-        else
-        {
-            if (!player.HasKitchenObject())
-            {
+            } else {
+                // player not carrying anything
+            }
+        }  else  {
+            if (player.HasKitchenObject())  {
+                
+            } else  {
                 GetKitchenObject().SetKitchenObjectParent(player);
             }
         }
