@@ -23,6 +23,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private float playerRadius = 0.7f;
     private float playerHight = 2f;
     private KitchenObject kitchenObject;
+    
 
     private BaseCounter selectedCounter;
     private bool isWalking;
