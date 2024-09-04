@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "KitchenChaosProj.sln"
+    "dotnet.defaultSolution": "KitchenChaosProj.sln",
+    "dotnet.preferCSharpExtension": true
 }

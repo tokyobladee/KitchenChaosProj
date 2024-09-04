@@ -10,16 +10,36 @@ public class ClearCounter : BaseCounter
 
     public override void Interact(Player player)
     {
-        if (!HasKitchenObject())
+        if (!HasKitchenObject()) // empty
         {
             if (player.HasKitchenObject())
             {
                 player.GetKitchenObject().SetKitchenObjectParent(this);
             } 
         } 
-        else
+        else // not empty
         {
-            if (!player.HasKitchenObject())
+            if (player.HasKitchenObject())
+            {
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+                {
+                    if(plateKitchenObject.TryAddIngridient(GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                    GetKitchenObject().DestroySelf();
+                    }
+                }
+                else
+                {
+                    // Player not carrying Plate but something else
+                    if(GetKitchenObject().TryGetPlate(out plateKitchenObject)){
+                       if(plateKitchenObject.TryAddIngridient(player.GetKitchenObject().GetKitchenObjectSO()))
+                       {
+                        player.GetKitchenObject().DestroySelf();
+                       }
+                    }
+                }
+            }
+            else
             {
                 GetKitchenObject().SetKitchenObjectParent(player);
             }

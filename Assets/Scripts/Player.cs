@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour, IKitchenObjectParent
-{ 
+{
     public static Player Instance { get; private set; }
 
     public event EventHandler <OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
