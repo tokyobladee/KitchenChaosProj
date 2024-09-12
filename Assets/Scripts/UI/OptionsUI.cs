@@ -30,6 +30,7 @@ public class OptionsUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI interactText;
     [SerializeField] private TextMeshProUGUI interactAltText;
     [SerializeField] private TextMeshProUGUI PauseText;
+    [SerializeField] private Transform pressToRebindKeyTransform;
     
     private void Awake()
     {
@@ -48,6 +49,15 @@ public class OptionsUI : MonoBehaviour
         closeButton.onClick.AddListener(() => {
             Hide();
         });
+
+        moveUpButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Move_Up); });
+        moveDownButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Move_Down); });
+        moveRightButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Move_Right); });
+        moveLeftButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Move_Left); });
+        interactButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Interact); });
+        interactAltButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.InteractAlternative); });
+        pauseButton.onClick.AddListener(() => { RebindBinding(GameInput.Binding.Pause); });
+
     }
 
     private void Start()
@@ -55,6 +65,7 @@ public class OptionsUI : MonoBehaviour
         KitchenGameManager.Instance.OnGameUnpaused += KitchenGameManager_OnGameUnpaused;
         UpdateVisual();
         Hide();
+        HidePressToRebindKey();
     }
 
     private void KitchenGameManager_OnGameUnpaused(object sender, EventArgs e)
@@ -84,5 +95,24 @@ public class OptionsUI : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+    }
+
+    private void ShowPressToRebindKey()
+    {
+        pressToRebindKeyTransform.gameObject.SetActive(true);
+    }
+
+    private void HidePressToRebindKey()
+    {
+        pressToRebindKeyTransform.gameObject.SetActive(false);
+    }
+
+    private void RebindBinding(GameInput.Binding binding)
+    {
+        ShowPressToRebindKey();
+        GameInput.Instance.RebindBinding(binding, () =>{
+            HidePressToRebindKey();
+            UpdateVisual();
+        });
     }
 }
